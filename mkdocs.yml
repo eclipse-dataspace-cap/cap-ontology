@@ -1,0 +1,74 @@
+site_name: Eclipse Conformity Assessment Ontology
+repo_url: https://github.com/eclipse-dataspace-cap/cap-ontology
+theme:
+  name: material
+  logo: figures/Stack-Colour-RGB-logo-alone.png
+  favicon: figures/Stack-Colour-RGB-logo-alone.png
+  palette:
+    primary: deep purple
+    accent: blue
+  features:
+    - content.tooltips
+    - content.code.annotate
+    - content.code.copy
+    - navigation.tabs
+    - navigation.sections
+    - navigation.path
+    - navigation.indexes
+  
+nav:
+  - Home: README.md
+  - Classes:
+    - ... | ontology/classes/*.md
+  - Enums:
+    - ... | ontology/enums/*.md
+  - Slots:
+    - ... | ontology/slots/*.md
+  - Types:
+    - ... | ontology/types/*.md
+
+  # - Annexes:
+  #   - changelog.md 
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - glightbox
+  - awesome-pages
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+

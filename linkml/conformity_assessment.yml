@@ -1,0 +1,328 @@
+id: "ConformityAssessment"
+prefixes:
+  linkml: https://w3id.org/linkml/
+  schema: https://schema.org/
+  cap: https://w3id.org/eclipse-cap/v1/#
+  dcterms: http://purl.org/dc/terms/
+  xsd: https://www.w3.org/2001/XMLSchema#
+imports:
+  - linkml:types
+default_range: string
+default_prefix: cap
+
+# enums:
+#   StatusEnum:
+#     permissible_values:
+#       active:
+#         description: Active
+#       inactive:
+#         description: Inactive
+#       suspended:
+#         description: Suspended
+
+types:
+  DateTimeISO8601:
+    description: DateTime in [ISO 8601-1:2019](https://www.iso.org/standard/70907.html) format
+    pattern: r"^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$" # https://regex101.com/r/eX3cI8/1
+    exact_mappings:
+      - https://schema.org/DateTime
+      - https://www.w3.org/TR/xmlschema11-2/#dateTime
+slots:
+  address:
+    slot_uri: https://semiceu.github.io/Core-Location-Vocabulary/releases/2.1.0/#Address
+    range: uri
+    close_mappings:
+      - https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#http://purl.org/dc/terms/Location
+  conformity_assessment_scheme:
+    slot_uri: schema:Thing
+    range: ConformityAssessmentScheme
+  description:
+    description: description of the object
+    slot_uri: schema:description
+  expiration_datetime:
+    description: expiration datetime of the attestation
+    slot_uri: xsd:dateTime
+    range: DateTimeISO8601
+  id:
+    identifier: true
+    required: true
+    description: |
+      a name, series of numbers, etc. that is used in a system to represent someone or something.
+      Examples: [W3C DID](https://www.w3.org/TR/did-core/), [IETF UUID7](https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-04.html#name-uuid-version-7)
+    slot_uri: schema:identifier
+    range: uri
+    any_of:
+      - range: string
+  issuance_datetime:
+    required: true
+    description: issuance datetime of the attestation
+    slot_uri: xsd:dateTime
+    range: DateTimeISO8601
+  issuer:
+    required: true
+    description: issuing party of the attestation
+    range: Party
+  owner:
+    range: Party
+  subject:
+    aliases:
+      - "[object (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)"
+      - "[object of conformity assessment (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)"
+    description: |
+      entity to which [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) apply (ISO/IEC 17000:2020)
+    slot_uri: schema:Thing
+    range: uri
+    any_of:
+      range: string
+
+classes:
+  Accreditation:
+    is_a: Attestation
+    description: third-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) related to a [conformity assessment body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.6), conveying formal demonstration of its competence, [impartiality](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.3) and consistent operation in performing specific conformity assessment activities (ISO/IEC 17000:2020)
+    slots:
+      - conformity_assessment_scheme
+    slot_usage:
+      issuer:
+        range: AccreditationBody
+      subject:
+        range: ConformityAssessmentBody
+        required: true
+      conformity_assessment_scheme:
+        multivalued: true
+        required: true
+
+  AccreditationBody:
+    is_a: Party
+
+  Attestation:
+    tree_root: true
+    abstract: true
+    description: |
+      issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated (ISO/IEC 17000:2020)
+    slots:
+      - id
+      - issuance_datetime
+      - expiration_datetime
+      - issuer
+      - subject
+    slot_usage:
+      subject:
+        multivalued: true
+        required: true
+
+  Certification:
+    is_a: Attestation
+    description: third-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) related to an [object of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2), with the exception of [accreditation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.7) (ISO/IEC 17000:2020)
+    slot_usage:
+      issuer:
+        range: ConformityAssessmentBody
+
+  ConformityAssessmentBody:
+    is_a: Party
+    description: body that performs conformity assessment activities, excluding [accreditation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.7) (ISO/IEC 17000:2020)
+
+  ConformityAssessmentScheme:
+    description: set of rules and [procedures](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.2) that describes the [objects of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2), identifies the [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) and provides the methodology for performing [conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.1) (ISO/IEC 17000:2020)
+    aliases:
+      - "[conformity assessment program (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)"
+    slots:
+      - id
+      - owner
+      - subject
+    slot_usage:
+      owner:
+        required: true
+        range: SchemeOwner
+    attributes:
+      procedure:
+        description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
+        range: uri
+        any_of:
+          range: string
+      specified_requirement:
+        description: need or expectation that is stated (ISO/IEC 17000:2020)
+        range: uri
+        any_of:
+          range: string
+
+  Declaration:
+    is_a: Attestation
+    description: first-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) (ISO/IEC 17000:2020)
+
+  ICTServiceInstance:
+    description: |
+      An instance of an ICT service.
+      Information and Communication Technology (ICT): technology for gathering, storing, retrieving, processing, analysing and transmitting information (ISO/IEC 30071-1:2019)
+    slots:
+      - address
+      - id
+    slot_usage:
+      address:
+        required: true
+
+  NaturalPerson:
+    description: A person from Schema.org
+    class_uri: schema:Person
+    slots:
+      - id
+
+  Organisation:
+    description: An organization from Schema.org
+    class_uri: schema:Organization
+    slots:
+      - address
+      - id
+    slot_usage:
+      address:
+        required: true
+
+  Party:
+    tree_root: true
+    abstract: true
+    mixins:
+      - NaturalPerson
+      - Organisation
+      - ICTServiceInstance
+
+  SchemeOwner:
+    is_a: Party
+    description: person or organization responsible for the development and maintenance of a [conformity assessment system](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.8) or [conformity assessment scheme](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)
+
+
+#   Address:
+#     description: >-
+#       Location: <https://semiceu.github.io/Core-Location-Vocabulary/releases/2.1.0/#Location>
+#       Address: <https://semiceu.github.io/Core-Location-Vocabulary/releases/2.1.0/#Address>
+#     class_uri: schema:Address
+
+#   Standard:
+#     description: a conformity assessement scheme
+#     attributes:
+#       name:
+#         range: string
+#       scope_type:
+#         description: "https://iaf.nu/en/scopes/"
+#         range: string
+
+#   Scheme:
+
+#   Accreditation:
+#     attributes:
+#       accreditation_organisation:
+#         range: AccreditationOrganisation
+#       status:
+#         range: StatusEnum
+#       standard:
+#         range: Standard
+# #      scheme:
+# #        range: Scheme
+#       scope:
+#         range: string
+# # - key_location(*): KeyLocation (no idea what it is)
+#       country:
+#         range: schema:Country
+
+#   Certification:
+#     attributes:
+#       service_id:
+#         range: string
+#       product_id:
+#         range: string
+#       model_id:
+#         range: string
+#       standards:
+#         range: Standard
+#         multivalued: true
+#       certification_organisation:
+#         range: Organisation
+#       # test:
+#       #   range: string
+#       #   # slot_uri: vcard:locality
+#       #   slot_uri: https_vcard:locality
+
+#   CertifiedProduct:
+#     description: the certified `Product`
+#     attributes:
+#       description:
+#         range: string
+#       owner:
+#         range: Organisation
+#       location:
+#         range: Address
+#       certifications:
+#         description: "certification according to ISO/IEC 17000:2020"
+#         range: Certification
+#         multivalued: true
+
+#   CertifiedService:
+#     description: the certified `Service`
+#     attributes:
+#       description:
+#         range: string
+#       owner:
+#         range: Organisation
+#       location:
+#         range: Address
+#       certifications:
+#         description: "certification according to ISO/IEC 17000:2020"
+#         range: Certification
+#         multivalued: true
+
+#   CertifiedOrganisation:
+#     description: the certified `Organisation`
+#     attributes:
+#       entity:
+#         range: Organisation
+#       location:
+#         range: Address
+#       certifications:
+#         description: "certification according to ISO/IEC 17000:2020"
+#         range: Certification
+#         multivalued: true
+
+#   CertifyingOrganisation:
+#     attributes:
+#       entity:
+#         range: Organisation
+#       description:
+#         range: string
+#       accreditations:
+#         range: Accreditation
+#         multivalued: true
+#       related_organisation:
+#         range: Organisation
+#         multivalued: true
+
+#   AccreditationOrganisation:
+#     description: the `Organisation` accrediting `CertificationOrganisation`
+#     attributes:
+#       entity:
+#         range: Organisation
+#       description:
+#         range: string
+#       certifying_organisations:
+#         range: CertifyingOrganisation
+#         multivalued: true
+#       standards:
+#         range: Standard
+#         multivalued: true
+#   # - key_location(*): KeyLocation (no idea what it is)
+
+# # from https://www.iafcertsearch.org/certified-entity/rJsaiRfRy2aoGQkZHp4YOWh8
+
+# # KeyLocation:
+# # - office_type: branch | head
+# # - location: Location | Address
+
+# # https://support.iafcertsearch.org/docs/field-name-glossary/certification-body-template-for-accreditation-body
+
+# # IAF:
+# # - International Accreditation Forum
+# # - https://www.iafcertsearch.org/
+# # EA:
+# # - European Accreditation
+# # - https://european-accreditation.org/
+# # ilac:
+# # - international organisation for accreditation bodies
+# # - https://ilac.org/
+# # - ILAC Mutual Recognition Arrangement

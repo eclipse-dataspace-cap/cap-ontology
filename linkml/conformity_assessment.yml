@@ -155,15 +155,13 @@ classes:
       procedure:
         description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
         multivalued: true
-        range: uri
         any_of:
-          range: string
+          range: uri
       specified_requirement:
         description: need or expectation that is stated (ISO/IEC 17000:2020)
         multivalued: true
-        range: uri
         any_of:
-          range: string
+          range: uri
 
   Declaration:
     is_a: Attestation

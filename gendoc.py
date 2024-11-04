@@ -6,6 +6,7 @@ from pathlib import Path
 from linkml.generators import docgen
 from linkml.generators.docgen import DocGenerator
 from linkml.generators.owlgen import OwlSchemaGenerator
+from linkml.generators.linkmlgen import LinkmlGenerator
 import logging
 import traceback
 
@@ -40,49 +41,47 @@ def enshorten(input: str) -> str:
 
 docgen.enshorten = enshorten
 
-log_level = logging.DEBUG
+log_level = logging.INFO
 logging.basicConfig(
     level=log_level, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-def test_owlready2(ontology_filepath: str):
+def test_owlready2(ontology_filepath: Path):
     from owlready2 import get_ontology
-    onto = get_ontology(ontology_filepath).load()
-    for classe in onto.classes():
-        print(classe, classe.iri)
+    onto = get_ontology("file://" + str(ontology_filepath.absolute())).load()
+    logger.info(f"owlready2: found {len(list(onto.classes()))} classes")
+    # for classe in onto.classes():
+    #     print(classe, classe.iri)
 
 
-def test_rdflib(ontology_filepath: str) -> str:
+def test_rdflib(ontology_filepath: Path):
     import rdflib
     g = rdflib.Graph()
-    g.parse(ontology_filepath)
-    for s, p, o in g:
-        print(s, p, o)
-    return g.serialize(format="xml")
+    g.parse(str(ontology_filepath.absolute()))
+    logger.info(f"rdflib: found {len(list(g))} elements")
+    # for s, p, o in g:
+    #     print(s, p, o)
+    # return g.serialize(format="xml")
 
 
-if __name__ == '__main__':
-    rootdir = Path(__file__).parent
-    schema_file = rootdir / 'linkml/conformity_assessment.yml'
-
-    output_directory = rootdir / 'docs/ontology'
-    template_directory = rootdir / 'docgen-template'
-
-    # Generate documentation for each schema file
-    logger.info(f"process file {schema_file}")
-    # Create a DocGenerator instance for each schema file
+def generate_doc(schema_file: Path, output_directory: Path):
+    logger.info(f"Generate documentation with {schema_file}")
     doc_generator = DocGenerator(
         str(schema_file),
         template_directory=template_directory,
         subfolder_type_separation=True,
         useuris=True,
         mergeimports=False,
-        log_level=logging.DEBUG
+        log_level=log_level
     )
     doc_generator.serialize(directory=str(output_directory))
+
+
+def generate_owl(schema_file: Path, output_file: Path, format: str = 'owl'):
     owl_generator = OwlSchemaGenerator(
         str(schema_file),
+        format=format,
         metadata_profile='linkml',
         type_objects=False,
         metaclasses=False,
@@ -92,15 +91,40 @@ if __name__ == '__main__':
         mixins_as_expressions=False,
         use_native_uris=True,
         default_permissible_value_type=str(OWL.Class),
-        log_level=logging.DEBUG
+        log_level=log_level
     )
     ontology_owl = owl_generator.serialize()
-    with open(str((output_directory / 'ontology.owl.ttl').absolute()), "w") as fd:
+    with open(str(output_file.absolute()), "w") as fd:
         fd.write(ontology_owl)
 
-    ontology_rdfxml = test_rdflib(
-        str((output_directory / 'ontology.owl.ttl').absolute()))
-    with open(str((output_directory / 'ontology.owl.xml').absolute()), "w") as fd:
-        fd.write(ontology_rdfxml)
-    test_owlready2(
-        "file://" + str((output_directory / 'ontology.owl.xml').absolute()))
+
+def generate_linkml(schema_file: Path, output_file: Path):
+    linkml_generator = LinkmlGenerator(
+        str(schema_file),
+        format='yaml',
+        materialize_attributes=False,
+        materialize_patterns=False,
+        mergeimports=False,
+        log_level=log_level
+    )
+    ontology_linkml = linkml_generator.serialize()
+    with open(str((output_directory / 'ontology.linkml.yml').absolute()), "w") as fd:
+        fd.write(ontology_linkml)
+
+
+if __name__ == '__main__':
+    rootdir = Path(__file__).parent
+    schema_file = rootdir / 'linkml/conformity_assessment.yml'
+
+    output_directory = rootdir / 'docs/ontology'
+    template_directory = rootdir / 'docgen-template'
+
+    logger.info(f"process file {schema_file}")
+
+    generate_doc(schema_file, output_directory)
+    generate_owl(schema_file, output_directory / 'ontology.owl.ttl')
+    generate_owl(schema_file, output_directory /
+                 'ontology.owl.xml', format='xml')
+    generate_linkml(schema_file, output_directory / 'ontology.linkml.yml')
+    test_owlready2(output_directory / 'ontology.owl.xml')
+    test_rdflib(output_directory / 'ontology.owl.ttl')

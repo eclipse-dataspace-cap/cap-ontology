@@ -1,4 +1,4 @@
-site_name: Eclipse Conformity Assessment Ontology
+site_name: Eclipse Conformity Assessment Policy and Credential Profile - Ontology
 repo_url: https://github.com/eclipse-dataspace-cap/cap-ontology
 theme:
   name: material
@@ -12,23 +12,23 @@ theme:
     - content.code.annotate
     - content.code.copy
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.path
     - navigation.indexes
   
 nav:
-  - Home: README.md
-  - Classes:
-    - ... | ontology/classes/*.md
-  - Enums:
-    - ... | ontology/enums/*.md
-  - Slots:
-    - ... | ontology/slots/*.md
-  - Types:
-    - ... | ontology/types/*.md
-
-  # - Annexes:
-  #   - changelog.md 
+  - Introduction: README.md
+  - Ontology:
+    - ontology/index.md
+    - Classes:
+      - ... | flat | ontology/classes/*.md
+    - Enums:
+      - ... | flat | enums/*.md
+    - Slots:
+      - ... | flat | slots/*.md
+    - Types:
+      - ... | flat | types/*.md
 
 plugins:
   - search

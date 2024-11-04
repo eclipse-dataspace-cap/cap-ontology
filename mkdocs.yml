@@ -24,11 +24,11 @@ nav:
     - Classes:
       - ... | flat | ontology/classes/*.md
     - Enums:
-      - ... | flat | enums/*.md
+      - ... | flat | ontology/enums/*.md
     - Slots:
-      - ... | flat | slots/*.md
+      - ... | flat | ontology/slots/*.md
     - Types:
-      - ... | flat | types/*.md
+      - ... | flat | ontology/types/*.md
 
 plugins:
   - search

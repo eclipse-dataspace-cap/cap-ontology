@@ -15,6 +15,18 @@ default_prefix: cap
 ## ENUMS
 ##
 enums:
+  ConformityAssessmentActivityEnum:
+    permissible_values:
+      Selection:
+        description: Selection involves planning and gathering necessary information for the determination process
+      Determination:
+        description: Determination involves activities assessing whether the object or sample meets specified requirements.
+      Review:
+        description: consideration of the suitability, adequacy and effectiveness of selection and determination activities, and the results of these activities, with regard to fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) by an [object of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)
+      Decision:
+        description: conclusion, based on the results of [review](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.1), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has or has not been demonstrated
+      Attestation:
+        description: issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated
   # SurveillanceEnum:
   #   description: Terms relating to surveillance (ISO/IEC 17000:2020)
   #   permissible_values:
@@ -64,10 +76,14 @@ slots:
   # description:
   #   description: description of the object
   #   slot_uri: schema:description
-  # expiration_datetime:
-  #   description: expiration datetime of the attestation
-  #   slot_uri: xsd:dateTime
-  #   range: DateTimeISO8601
+  valid_from_datetime:
+    description: start of validity of the statement
+    slot_uri: xsd:dateTime
+    range: DateTimeISO8601
+  valid_until_datetime:
+    description: end of validity of the statement
+    slot_uri: xsd:dateTime
+    range: DateTimeISO8601
   id:
     identifier: true
     required: true
@@ -80,7 +96,7 @@ slots:
       - schema:identifier
   issuance_datetime:
     required: true
-    description: issuance datetime of the attestation
+    description: issuance datetime of the statement
     slot_uri: xsd:dateTime
     range: DateTimeISO8601
   issuer:
@@ -88,6 +104,7 @@ slots:
     description: issuing party of the statement
     range: Party
   owner:
+    description: responsible party for the development and maintenance
     range: Party
   object:
     aliases:
@@ -96,6 +113,10 @@ slots:
       entity to which [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) apply (ISO/IEC 17000:2020)
     any_of:
       range: uri
+  surveillance:
+    description: information about the required next conformity assessement activities
+    range: Surveillance
+    multivalued: true
 ##
 ## CLASSES
 ##
@@ -124,9 +145,14 @@ classes:
     abstract: true
     description: |-
       issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated (ISO/IEC 17000:2020)
+    slots:
+      - surveillance
     slot_usage:
       issuer:
         range: ConformityAssessmentBody
+    attributes:
+      previous_attestation:
+        range: Attestation
 
   Certification:
     is_a: Attestation
@@ -210,6 +236,7 @@ classes:
     description: person or organization responsible for the development and maintenance of a [conformity assessment system](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.8) or [conformity assessment scheme](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)
 
   Statement:
+    tree_root: true
     description: |-
       Announcement that is issued to gives information in a formal or definite way.
       
@@ -219,7 +246,18 @@ classes:
     - issuance_datetime
     - issuer
     - object
+    - valid_from_datetime
+    - valid_until_datetime
     slot_usage:
       object:
         multivalued: true
+        required: true
+  Surveillance:
+    description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)
+    attributes:
+      activity:
+        range: ConformityAssessmentActivityEnum
+        required: true
+      expected_datetime:
+        range: DateTimeISO8601
         required: true

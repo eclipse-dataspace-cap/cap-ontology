@@ -129,7 +129,7 @@ classes:
     slot_usage:
       issuer:
         range: AccreditationBody
-      subject:
+      object:
         range: ConformityAssessmentBody
         required: true
       conformity_assessment_scheme:

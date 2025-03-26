@@ -1,6 +1,6 @@
 # Conformity Assessment Policy and Credential Profile ontology
 
-This repositiry contains the ontology - schema and shapes - files related to the conformity assessment.
+This repository contains the ontology - schema and shapes - files related to the conformity assessment.
 
 The main website is located [here](https://eclipse-dataspace-cap.github.io/).
 
@@ -9,4 +9,3 @@ The questions / issues about the ontology, use this project [issues](https://git
 ## Contributions
 
 The framework used to build the ontology is [LinkML](https://linkml.io/)
-

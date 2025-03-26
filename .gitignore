@@ -3,3 +3,6 @@ docs/ontology/*
 .vscode
 .direnv
 public/
+.idea
+
+node_modules

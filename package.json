@@ -1,0 +1,21 @@
+{
+  "name": "cap-ontology",
+  "version": "0.0.1",
+  "description": "This repository contains the ontology - schema and shapes - files related to the conformity assessment.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse-dataspace-cap/cap-ontology.git"
+  },
+  "author": "Gaia-X CINO Team",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/eclipse-dataspace-cap/cap-ontology/issues"
+  },
+  "homepage": "https://eclipse-dataspace-cap.github.io/",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "semantic-release": "^24.2.3"
+  }
+}

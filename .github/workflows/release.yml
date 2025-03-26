@@ -1,4 +1,4 @@
-name: Semantic release
+name: Release
 on:
   workflow_dispatch:
   push:
@@ -11,18 +11,57 @@ permissions:
   pull-requests: write
 
 jobs:
-  release:
-    if: "!contains(github.event.head_commit.message, 'release')"
-    runs-on: ubuntu-22.04
+  build-linkml:
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    runs-on: ubuntu-latest
+    container: linkml/linkml:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip3 install rdflib
+      - name: Build shapes (SHACL)
+        run: gen-shacl linkml/conformity_assessment.yml --no-mergeimports --closed --suffix Shape > shapes.shacl.ttl
+      - name: Build schemas (OWL)
+        run: gen-owl --no-use-native-uris --assert-equivalent-classes linkml/conformity_assessment.yml > ontology.ttl
+      - name: Generate JSON-LD context
+        run: gen-jsonld-context linkml/conformity_assessment.yml --no-mergeimports > context.jsonld
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Schemas
+          path: |
+            shapes.shacl.ttl
+            ontology.ttl
+            context.jsonld
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build-linkml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Schemas
+          path: release-assets
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         with:
           dry_run: true
           extra_plugins: |
             @semantic-release/changelog@6.0.0
+            @semantic-release/github
             @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            shapes.shacl.ttl
+            ontology.ttl
+            context.jsonld
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,7 +3,16 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/github",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "artifacts/shapes.shacl.ttl", "label": "SHACL Shapes" },
+          { "path": "artifacts/ontology.ttl", "label": "Ontology (OWL)" },
+          { "path": "artifacts/context.jsonld", "label": "JSON-LD Context" }
+        ]
+      }
+    ],
     [
       "@semantic-release/changelog",
       {

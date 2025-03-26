@@ -14,7 +14,9 @@ jobs:
   build-linkml:
     if: "!contains(github.event.head_commit.message, 'chore(release)')"
     runs-on: ubuntu-latest
-    container: linkml/linkml:latest
+    container:
+      image: linkml/linkml:latest
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +36,7 @@ jobs:
             shapes.shacl.ttl
             ontology.ttl
             context.jsonld
+          retention-days: 7
 
   release:
     runs-on: ubuntu-latest
@@ -45,23 +48,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Schemas
-          path: release-assets
+          path: artifacts
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         with:
-          dry_run: true
           extra_plugins: |
             @semantic-release/changelog@6.0.0
             @semantic-release/github
             @semantic-release/git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            shapes.shacl.ttl
-            ontology.ttl
-            context.jsonld
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

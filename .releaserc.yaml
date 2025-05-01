@@ -7,10 +7,12 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "artifacts/shapes.shacl.ttl", "label": "SHACL Shapes" },
-          { "path": "artifacts/ontology.ttl", "label": "Ontology (OWL)" },
-          { "path": "artifacts/context.jsonld", "label": "JSON-LD Context" }
-        ]
+          { "path": "artifacts/cap.linkml.yaml", "label": "Linkml scheme" },
+          { "path": "artifacts/cap.shacl.ttl", "label": "SHACL Shape" },
+          { "path": "artifacts/cap.owl.ttl", "label": "Ontology (turtle)" },
+          { "path": "artifacts/cap.owl.xml", "label": "Ontology (XML)" },
+          { "path": "artifacts/cap.jsonld", "label": "JSON-LD Context" }
+         ]
       }
     ],
     [

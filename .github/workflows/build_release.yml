@@ -1,0 +1,94 @@
+name: Build & Release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  get-next-version:
+    uses: semantic-release-action/next-release-version/.github/workflows/next-release-version.yml@v4
+
+  build:
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    # && needs.get-next-version.outputs.new-release-published == 'true'"
+    runs-on: ubuntu-22.04
+    needs:
+      - get-next-version
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install --upgrade pip
+      - name: Install dependencies
+        run: pip install -Ur requirements.txt
+      - run: ./gendoc.py --version "${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}"
+      - run: VERSION="${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}" mkdocs build --site-dir public
+      - name: Check for WARNING
+        run: |
+          gen-owl build/conformity_assessment.yml > /dev/null 2> stdout.log          
+          if grep 'WARNING' stdout.log; then
+            echo "WARNING messages found — stopping the job intentionally."
+            exit 1  # Fail the job
+          fi
+      - name: Build LinkML
+        run: gen-linkml build/conformity_assessment.yml --no-mergeimports --format=yaml  > public/cap.linkml.yaml
+      - name: Build shapes (SHACL)
+        run: gen-shacl build/conformity_assessment.yml --no-mergeimports --closed --suffix Shape > public/cap.shacl.ttl
+      - name: Build ontology (Turtle)
+        run: gen-owl build/conformity_assessment.yml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris --assert-equivalent-classes > public/cap.owl.ttl
+      - name: Build ontology (XML)
+        run: gen-owl build/conformity_assessment.yml --format=xml --no-mergeimports --no-use-native-uris --assert-equivalent-classes > public/cap.owl.xml
+      - name: Generate JSON-LD context
+        run: gen-jsonld-context build/conformity_assessment.yml --no-mergeimports > public/cap.jsonld
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Schemas
+          path: |
+            public/cap.*
+          retention-days: 90
+
+  deploy-page:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
+    needs: build
+    permissions:
+      id-token: write
+      pages: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Schemas
+          path: artifacts
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          extra_plugins: |
+            @semantic-release/changelog@6.0.0
+            @semantic-release/github
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

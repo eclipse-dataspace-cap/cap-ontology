@@ -1,8 +1,9 @@
-id: "ConformityAssessment"
+name: ConformityAssessment
+id: http://w3id.org/eclipse-cap/v{version}/#
 prefixes:
   linkml: https://w3id.org/linkml/
   schema: http://schema.org/
-  cap: https://w3id.org/eclipse-cap/v1/#
+  cap: https://w3id.org/eclipse-cap/v{version}/#
   dcterms: http://purl.org/dc/terms/
   xsd: http://www.w3.org/2001/XMLSchema#
   vcard: https://www.w3.org/2006/vcard/ns#
@@ -71,11 +72,8 @@ slots:
   #     - https://semiceu.github.io/Core-Location-Vocabulary/releases/2.1.0/#Address
   #     - https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#http://purl.org/dc/terms/Location
   conformity_assessment_scheme:
-    # slot_uri: schema:Thing
+    description: scheme used to perform the assessement.
     range: ConformityAssessmentScheme
-  # description:
-  #   description: description of the object
-  #   slot_uri: schema:description
   valid_from_datetime:
     description: start of validity of the statement
     slot_uri: xsd:dateTime
@@ -84,16 +82,6 @@ slots:
     description: end of validity of the statement
     slot_uri: xsd:dateTime
     range: DateTimeISO8601
-  id:
-    identifier: true
-    required: true
-    description: |-
-      a name, series of numbers, etc. that is used in a system to represent someone or something.
-      Examples: [W3C DID](https://www.w3.org/TR/did-core/), [IETF UUID7](https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-04.html#name-uuid-version-7)
-    any_of:
-      - range: uri
-    exact_mappings:
-      - schema:identifier
   issuance_datetime:
     required: true
     description: issuance datetime of the statement
@@ -111,8 +99,7 @@ slots:
       - "[object of conformity assessment (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)"
     description: |-
       entity to which [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) apply (ISO/IEC 17000:2020)
-    any_of:
-      range: uri
+    range: Object
   surveillance:
     description: information about the required next conformity assessement activities
     range: Surveillance
@@ -146,6 +133,7 @@ classes:
     description: |-
       issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated (ISO/IEC 17000:2020)
     slots:
+      - conformity_assessment_scheme
       - surveillance
     slot_usage:
       issuer:
@@ -153,6 +141,7 @@ classes:
     attributes:
       previous_attestation:
         range: Attestation
+        multivalued: true
 
   Certification:
     is_a: Attestation
@@ -167,73 +156,51 @@ classes:
     aliases:
       - "[conformity assessment program (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)"
     slots:
-      - id
       - owner
       - object
     slot_usage:
       owner:
-        required: true
         range: SchemeOwner
+        multivalued: true
       object:
         multivalued: true
-        required: true
     attributes:
       procedure:
         description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
+        range: Procedure
         multivalued: true
-        any_of:
-          range: uri
       specified_requirement:
         description: need or expectation that is stated (ISO/IEC 17000:2020)
+        range: SpecifiedRequirement
         multivalued: true
-        any_of:
-          range: uri
 
   Declaration:
     is_a: Attestation
     description: first-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) (ISO/IEC 17000:2020)
 
-  # ICTServiceInstance:
-  #   description: |-
-  #     An instance of an ICT service.
-  #     Information and Communication Technology (ICT): technology for gathering, storing, retrieving, processing, analysing and transmitting information (ISO/IEC 30071-1:2019)
-  #   slots:
-  #     - address
-  #     - id
-  #   slot_usage:
-  #     address:
-  #       required: true
-
-  # NaturalPerson:
-  #   description: A person
-  #   class_uri: schema:Person
-  #   exact_mappings:
-  #     - vcard:Individual
-  #   slots:
-  #     - id
-
-  # Organisation:
-  #   description: An organization
-  #   class_uri: schema:Organization
-  #   exact_mappings:
-  #     - vcard:Organization
-  #   slots:
-  #     - address
-  #     - id
-  #   slot_usage:
-  #     address:
-  #       required: true
+  Object:
+    description: entity to which specified requirements (5.1) apply
 
   Party:
     description: |-
       An actor that undertake a role.
       This is can be a natural person, an organisation, a legal entity, a governement, an instance of an ICT service, etc
-    slots:
-      - id
+  #   exact_mappings:
+  #     - vcard:Individual
+  #     - vcard:Organization
+  #   class_uri: schema:Organization
+  #   class_uri: schema:Person
+  #   class_uri: odrl:Party
+
+  Procedure:
+    description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
 
   SchemeOwner:
     is_a: Party
     description: person or organization responsible for the development and maintenance of a [conformity assessment system](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.8) or [conformity assessment scheme](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)
+
+  SpecifiedRequirement:
+    description: need or expectation that is stated (ISO/IEC 17000:2020)
 
   Statement:
     tree_root: true
@@ -242,7 +209,6 @@ classes:
       
       Note1: This can be used to issue statement of nonconformity.
     slots:
-    - id
     - issuance_datetime
     - issuer
     - object
@@ -252,6 +218,7 @@ classes:
       object:
         multivalued: true
         required: true
+
   Surveillance:
     description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)
     attributes:

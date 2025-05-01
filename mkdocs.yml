@@ -17,6 +17,9 @@ theme:
     - navigation.path
     - navigation.indexes
   
+extra:
+  version: !ENV [VERSION, "0.0.0"]
+
 nav:
   - Introduction: README.md
   - Ontology:
@@ -36,6 +39,7 @@ plugins:
       enable_creation_date: true
   - glightbox
   - awesome-pages
+  - macros
 
 markdown_extensions:
   - abbr

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
+import argparse
+import logging
+import os
 from io import StringIO
-from markdown import Markdown
 from pathlib import Path
+
+import yaml
+from markdown import Markdown
+
 from linkml.generators import docgen
 from linkml.generators.docgen import DocGenerator
-from linkml.generators.owlgen import OwlSchemaGenerator
-from linkml.generators.linkmlgen import LinkmlGenerator
-import logging
-import traceback
 
-from rdflib import OWL
+log_level = logging.INFO
+logging.basicConfig(level=log_level, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 
 def unmark_element(element, stream=None):
@@ -27,6 +31,7 @@ def unmark_element(element, stream=None):
 
 # monkey patching Markdown
 Markdown.output_formats["plain"] = unmark_element
+
 # saving original function
 _enshorten = docgen.enshorten
 
@@ -39,30 +44,8 @@ def enshorten(input: str) -> str:
     return _enshorten(__md.convert(input))
 
 
+# monkey patching docgen
 docgen.enshorten = enshorten
-
-log_level = logging.INFO
-logging.basicConfig(
-    level=log_level, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-
-def test_owlready2(ontology_filepath: Path):
-    from owlready2 import get_ontology
-    onto = get_ontology("file://" + str(ontology_filepath.absolute())).load()
-    logger.info(f"owlready2: found {len(list(onto.classes()))} classes")
-    # for classe in onto.classes():
-    #     print(classe, classe.iri)
-
-
-def test_rdflib(ontology_filepath: Path):
-    import rdflib
-    g = rdflib.Graph()
-    g.parse(str(ontology_filepath.absolute()))
-    logger.info(f"rdflib: found {len(list(g))} elements")
-    # for s, p, o in g:
-    #     print(s, p, o)
-    # return g.serialize(format="xml")
 
 
 def generate_doc(schema_file: Path, output_directory: Path):
@@ -73,58 +56,47 @@ def generate_doc(schema_file: Path, output_directory: Path):
         subfolder_type_separation=True,
         useuris=True,
         mergeimports=False,
-        log_level=log_level
+        log_level=log_level,
     )
     doc_generator.serialize(directory=str(output_directory))
 
 
-def generate_owl(schema_file: Path, output_file: Path, format: str = 'owl'):
-    owl_generator = OwlSchemaGenerator(
-        str(schema_file),
-        format=format,
-        metadata_profile='linkml',
-        type_objects=False,
-        metaclasses=False,
-        add_root_classes=False,
-        add_ols_annotations=True,
-        assert_equivalent_classes=False,
-        mixins_as_expressions=False,
-        use_native_uris=True,
-        default_permissible_value_type=str(OWL.Class),
-        log_level=log_level
+def format_yaml(input_file: Path, output_file: Path, version: str):
+    with open(input_file, "r") as f:
+        data = yaml.safe_load(f)
+
+    values = {"version": version, "major": version.split(".")[0]}
+
+    # Check and update the 'id' field using format()
+    if "id" in data and isinstance(data["id"], str):
+        data["id"] = data["id"].format(**values)
+    if "cap" in data["prefixes"] and isinstance(data["prefixes"]["cap"], str):
+        data["prefixes"]["cap"] = data["prefixes"]["cap"].format(**values)
+
+    # Save the updated YAML back to a file
+    os.makedirs(output_file.parent, exist_ok=True)
+    with open(output_file, "w") as f:
+        yaml.dump(data, f, sort_keys=False)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="ProgramName", description="What the program does", epilog="Text at the bottom of help"
     )
-    ontology_owl = owl_generator.serialize()
-    with open(str(output_file.absolute()), "w") as fd:
-        fd.write(ontology_owl)
+    parser.add_argument("--version", default="0.0.0")
+    args = parser.parse_args()
 
+    logger.info(f"Generating files for version {args.version}")
 
-def generate_linkml(schema_file: Path, output_file: Path):
-    linkml_generator = LinkmlGenerator(
-        str(schema_file),
-        format='yaml',
-        materialize_attributes=False,
-        materialize_patterns=False,
-        mergeimports=False,
-        log_level=log_level
-    )
-    ontology_linkml = linkml_generator.serialize()
-    with open(str((output_directory / 'ontology.linkml.yml').absolute()), "w") as fd:
-        fd.write(ontology_linkml)
-
-
-if __name__ == '__main__':
     rootdir = Path(__file__).parent
-    schema_file = rootdir / 'linkml/conformity_assessment.yml'
 
-    output_directory = rootdir / 'docs/ontology'
-    template_directory = rootdir / 'docgen-template'
+    schema_file = rootdir / "build" / "conformity_assessment.yml"
+
+    format_yaml(input_file=rootdir / "linkml/conformity_assessment.yml", output_file=schema_file, version=args.version)
+
+    output_directory = rootdir / "docs/ontology"
+    template_directory = rootdir / "docgen-template"
 
     logger.info(f"process file {schema_file}")
 
     generate_doc(schema_file, output_directory)
-    generate_owl(schema_file, output_directory / 'ontology.owl.ttl')
-    generate_owl(schema_file, output_directory /
-                 'ontology.owl.xml', format='xml')
-    generate_linkml(schema_file, output_directory / 'ontology.linkml.yml')
-    test_owlready2(output_directory / 'ontology.owl.xml')
-    test_rdflib(output_directory / 'ontology.owl.ttl')

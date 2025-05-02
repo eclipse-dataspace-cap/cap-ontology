@@ -1,0 +1,206 @@
+name: ConformityAssessment
+id: http://w3id.org/eclipse-cap/v{version}/#
+prefixes:
+  linkml: https://w3id.org/linkml/
+  schema: http://schema.org/
+  cap: https://w3id.org/eclipse-cap/v{version}/#
+  dcterms: http://purl.org/dc/terms/
+  xsd: http://www.w3.org/2001/XMLSchema#
+  vcard: https://www.w3.org/2006/vcard/ns#
+imports:
+  - linkml:types
+default_range: string
+default_prefix: cap
+
+##
+## ENUMS
+##
+enums:
+  ConformityAssessmentActivityEnum:
+    permissible_values:
+      Selection:
+        description: Selection involves planning and gathering necessary information for the determination process
+      Determination:
+        description: Determination involves activities assessing whether the object or sample meets specified requirements.
+      Review:
+        description: consideration of the suitability, adequacy and effectiveness of selection and determination activities, and the results of these activities, with regard to fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) by an [object of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)
+      Decision:
+        description: conclusion, based on the results of [review](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.1), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has or has not been demonstrated
+      Attestation:
+        description: issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated
+  # SurveillanceEnum:
+  #   description: Terms relating to surveillance (ISO/IEC 17000:2020)
+  #   permissible_values:
+  #     surveillance:
+  #       description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)
+  #     suspension:
+  #       description: temporary restriction of the statement of conformity by the body that issued the statement, for all or part of the specified [scope of attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.4) (ISO/IEC 17000:2020)
+  #     withdrawal:
+  #       aliases:
+  #         - cancellation
+  #       description: revocation of the statement of conformity by the body that issued the statement (ISO/IEC 17000:2020)
+  #     expiry:
+  #       description: ending of the validity of the statement of conformity after a specified period (ISO/IEC 17000:2020)
+  #     restoration:
+  #       description: reinstatement of the full or partial statement of conformity (ISO/IEC 17000:2020)
+  #     appeal:
+  #       description: request by the person or organization that provides, or that is, the [object of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2) to a [conformity assessment body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.6) or an [accreditation body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.7) for reconsideration by that body of a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2) it has made relating to that object (ISO/IEC 17000:2020)
+  #     complaint:
+  #       description: expression of dissatisfaction, other than [appeal](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:8.6), by any person or organization to a [conformity assessment body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.6) or an [accreditation body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.7), relating to the activities of that body, where a response is expected (ISO/IEC 17000:2020)
+
+##
+## SLOTS
+##
+slots:
+  conformity_assessment_scheme:
+    description: scheme used to perform the assessement.
+    range: ConformityAssessmentScheme
+  expected_datetime:
+    range: datetime
+  valid_from_datetime:
+    description: start of validity of the statement
+    range: datetime
+  valid_until_datetime:
+    description: end of validity of the statement
+    range: datetime
+  issuance_datetime:
+    required: true
+    description: issuance datetime of the statement
+    range: datetime
+  issuer:
+    required: true
+    description: issuing party of the statement
+    range: Party
+  owner:
+    description: responsible party for the development and maintenance
+    range: Party
+  object:
+    aliases:
+      - "[object of conformity assessment (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2)"
+    description: |-
+      entity to which [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) apply (ISO/IEC 17000:2020)
+    range: Object
+  surveillance:
+    description: information about the required next conformity assessement activities
+    range: Surveillance
+    multivalued: true
+##
+## CLASSES
+##
+classes:
+  Accreditation:
+    is_a: Attestation
+    description: third-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) related to a [conformity assessment body](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.6), conveying formal demonstration of its competence, [impartiality](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.3) and consistent operation in performing specific conformity assessment activities (ISO/IEC 17000:2020)
+    slots:
+      - conformity_assessment_scheme
+    slot_usage:
+      issuer:
+        range: AccreditationBody
+      object:
+        range: ConformityAssessmentBody
+        required: true
+      conformity_assessment_scheme:
+        multivalued: true
+        required: true
+
+  AccreditationBody:
+    is_a: Party
+    description: authoritative body that performs [accreditation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.7) (ISO/IEC 17000:2020)
+
+  Attestation:
+    is_a: Statement
+    abstract: true
+    description: |-
+      issue of a statement, based on a [decision](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.2), that fulfilment of [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) has been demonstrated (ISO/IEC 17000:2020)
+    slots:
+      - conformity_assessment_scheme
+      - surveillance
+    slot_usage:
+      issuer:
+        range: ConformityAssessmentBody
+    attributes:
+      previous_attestation:
+        range: Attestation
+        multivalued: true
+
+  Certification:
+    is_a: Attestation
+    description: third-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) related to an [object of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2), with the exception of [accreditation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.7) (ISO/IEC 17000:2020)
+
+  ConformityAssessmentBody:
+    is_a: Party
+    description: body that performs conformity assessment activities, excluding [accreditation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.7) (ISO/IEC 17000:2020)
+
+  ConformityAssessmentScheme:
+    description: set of rules and [procedures](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.2) that describes the [objects of conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.2), identifies the [specified requirements](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:5.1) and provides the methodology for performing [conformity assessment](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.1) (ISO/IEC 17000:2020)
+    aliases:
+      - "[conformity assessment program (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)"
+    slots:
+      - owner
+      - object
+    slot_usage:
+      owner:
+        range: SchemeOwner
+        multivalued: true
+      object:
+        multivalued: true
+    attributes:
+      procedure:
+        description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
+        range: Procedure
+        multivalued: true
+      specified_requirement:
+        description: need or expectation that is stated (ISO/IEC 17000:2020)
+        range: SpecifiedRequirement
+        multivalued: true
+
+  Declaration:
+    is_a: Attestation
+    description: first-party [attestation](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:7.3) (ISO/IEC 17000:2020)
+
+  Object:
+    description: entity to which specified requirements (5.1) apply
+
+  Party:
+    description: |-
+      An actor that undertake a role.
+      This is can be a natural person, an organisation, a legal entity, a governement, an instance of an ICT service, etc
+
+  Procedure:
+    description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
+
+  SchemeOwner:
+    is_a: Party
+    description: person or organization responsible for the development and maintenance of a [conformity assessment system](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.8) or [conformity assessment scheme](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)
+
+  SpecifiedRequirement:
+    description: need or expectation that is stated (ISO/IEC 17000:2020)
+
+  Statement:
+    tree_root: true
+    description: |-
+      Announcement that is issued to gives information in a formal or definite way.
+      
+      Note1: This can be used to issue statement of nonconformity.
+    slots:
+    - issuance_datetime
+    - issuer
+    - object
+    - valid_from_datetime
+    - valid_until_datetime
+    slot_usage:
+      object:
+        multivalued: true
+        required: true
+
+  Surveillance:
+    description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)
+    slots:
+    - expected_datetime
+    attributes:
+      activity:
+        range: ConformityAssessmentActivityEnum
+        required: true
+      expected_datetime:
+        required: true
+

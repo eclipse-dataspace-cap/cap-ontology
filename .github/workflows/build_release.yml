@@ -28,21 +28,25 @@ jobs:
       - run: VERSION="${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}" mkdocs build --site-dir public
       - name: Check for WARNING
         run: |
-          gen-owl build/conformity_assessment.yml > /dev/null 2> stdout.log          
+          gen-owl build/cap.yaml > /dev/null 2> stdout.log          
           if grep 'WARNING' stdout.log; then
             echo "WARNING messages found — stopping the job intentionally."
             exit 1  # Fail the job
           fi
       - name: Build LinkML
-        run: gen-linkml build/conformity_assessment.yml --no-mergeimports --format=yaml  > public/cap.linkml.yaml
+        run: gen-linkml build/cap.yaml --no-mergeimports --format=yaml  > public/cap.linkml.yaml
       - name: Build shapes (SHACL)
-        run: gen-shacl build/conformity_assessment.yml --no-mergeimports --closed --suffix Shape > public/cap.shacl.ttl
+        run: gen-shacl build/cap.yaml --no-mergeimports --closed --suffix Shape > public/cap.shacl.ttl
       - name: Build ontology (Turtle)
-        run: gen-owl build/conformity_assessment.yml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris --assert-equivalent-classes > public/cap.owl.ttl
+        run: |
+          gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+          --assert-equivalent-classes --enum-iri-separator "_" > public/cap.owl.ttl
       - name: Build ontology (XML)
-        run: gen-owl build/conformity_assessment.yml --format=xml --no-mergeimports --no-use-native-uris --assert-equivalent-classes > public/cap.owl.xml
+        run: |
+          gen-owl build/cap.yaml --format=xml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+          --assert-equivalent-classes --enum-iri-separator "_" > public/cap.owl.ttl
       - name: Generate JSON-LD context
-        run: gen-jsonld-context build/conformity_assessment.yml --no-mergeimports > public/cap.jsonld
+        run: gen-jsonld-context build/cap.yaml --no-mergeimports > public/cap.jsonld
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public/

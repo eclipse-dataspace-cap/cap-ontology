@@ -118,10 +118,6 @@ classes:
     slot_usage:
       issuer:
         range: ConformityAssessmentBody
-    attributes:
-      previous_attestation:
-        range: Attestation
-        multivalued: true
 
   Certification:
     is_a: Attestation
@@ -192,6 +188,10 @@ classes:
       object:
         multivalued: true
         required: true
+    attributes:
+      previous_statement:
+        range: Statement
+        multivalued: true
 
   Surveillance:
     description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)

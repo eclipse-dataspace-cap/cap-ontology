@@ -1,3 +1,9 @@
+## [2.1.0](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.0.1...v2.1.0) (2025-05-03)
+
+### Features
+
+* update Attestation.previous_attestation to Statement.previous_statement ([22ab9c7](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/22ab9c70701de49d94197f46214d201a1b25eea4))
+
 ## [2.0.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.0.0...v2.0.1) (2025-05-03)
 
 ### Bug Fixes

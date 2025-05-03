@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.0.0...v2.0.1) (2025-05-03)
+
+### Bug Fixes
+
+* **release:** add missing ontology in XML format ([ed922ca](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/ed922cad9d5cd98cbfd350b26c661f2192597422))
+
 ## [2.0.0](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v1.0.0...v2.0.0) (2025-05-03)
 
 ### ⚠ BREAKING CHANGES

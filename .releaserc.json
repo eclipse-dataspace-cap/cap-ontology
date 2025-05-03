@@ -58,11 +58,11 @@
         "assets": [
           {
             "path": "artifacts/cap.linkml.yaml",
-            "label": "Linkml scheme"
+            "label": "Linkml scheme (yaml)"
           },
           {
             "path": "artifacts/cap.shacl.ttl",
-            "label": "SHACL Shape"
+            "label": "SHACL Shape (turtle)"
           },
           {
             "path": "artifacts/cap.owl.ttl",
@@ -74,7 +74,7 @@
           },
           {
             "path": "artifacts/cap.jsonld",
-            "label": "JSON-LD Context"
+            "label": "JSON-LD Context (json)"
           }
         ]
       }

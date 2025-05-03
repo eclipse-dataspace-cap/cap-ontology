@@ -63,7 +63,7 @@ jobs:
       - name: Build ontology (XML)
         run: |
           gen-owl build/cap.yaml --format=xml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
-          --assert-equivalent-classes --enum-iri-separator "_" > public/cap.owl.ttl
+          --assert-equivalent-classes --enum-iri-separator "_" > public/cap.owl.xml
       - name: Generate JSON-LD context
         run: gen-jsonld-context build/cap.yaml --no-mergeimports > public/cap.jsonld
       - uses: actions/upload-pages-artifact@v3

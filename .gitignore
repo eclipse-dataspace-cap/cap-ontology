@@ -6,7 +6,4 @@ public/
 .idea
 
 node_modules
-
-shapes.shacl.ttl
-ontology.ttl
-context.jsonld
+.env

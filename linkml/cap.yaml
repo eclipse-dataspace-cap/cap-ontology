@@ -1,5 +1,5 @@
 name: ConformityAssessment
-id: http://w3id.org/eclipse-cap/v{version}/#
+id: https://w3id.org/eclipse-cap/v{version}/
 prefixes:
   linkml: https://w3id.org/linkml/
   schema: http://schema.org/

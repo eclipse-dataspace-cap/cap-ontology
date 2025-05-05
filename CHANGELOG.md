@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.0...v2.1.1) (2025-05-05)
+
+### Bug Fixes
+
+* **shape:** open the shape for an open-world ontology ([41754c4](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/41754c459a5c4c962caca4f7b9124712f42285e5))
+* **shape:** open the shape for an open-world ontology ([d38db38](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/d38db38e580cf11135ae7e66e6aa65c8bb36d545))
+
 ## [2.1.0](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.0.1...v2.1.0) (2025-05-03)
 
 ### Features

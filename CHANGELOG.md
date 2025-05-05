@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.1...v2.1.2) (2025-05-05)
+
+### Bug Fixes
+
+* remove default .owl.tll suffix in the ontology IRI ([00c92b0](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/00c92b0dc8ca8dd2929a6b2f1718d5f2ae74d7e2))
+
 ## [2.1.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.0...v2.1.1) (2025-05-05)
 
 ### Bug Fixes

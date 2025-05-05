@@ -1,3 +1,9 @@
+## [2.1.3](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.2...v2.1.3) (2025-05-05)
+
+### Bug Fixes
+
+* fix the ontology URL (http -> https and remove trailing #) ([f309ff8](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/f309ff82da291316b6ca959db73f8730a2297455))
+
 ## [2.1.2](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.1...v2.1.2) (2025-05-05)
 
 ### Bug Fixes

@@ -57,11 +57,11 @@ jobs:
         run: gen-shacl build/cap.yaml --no-mergeimports --non-closed --suffix Shape > public/cap.shacl.ttl
       - name: Build ontology (Turtle)
         run: |
-          gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+          gen-owl build/cap.yaml --metadata-profile=rdfs --no-type-objects --no-mergeimports --no-use-native-uris \
           --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" > public/cap.owl.ttl
       - name: Build ontology (XML)
         run: |
-          gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+          gen-owl build/cap.yaml --metadata-profile=rdfs --no-type-objects --no-mergeimports --no-use-native-uris \
           --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" --format=xml > public/cap.owl.xml
       - name: Generate JSON-LD context
         run: gen-jsonld-context build/cap.yaml --no-mergeimports > public/cap.jsonld

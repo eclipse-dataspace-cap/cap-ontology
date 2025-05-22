@@ -1,12 +1,13 @@
 name: ConformityAssessment
 id: https://w3id.org/eclipse-cap/v{version}/
 prefixes:
-  linkml: https://w3id.org/linkml/
-  schema: http://schema.org/
   cap: https://w3id.org/eclipse-cap/v{version}/#
   dcterms: http://purl.org/dc/terms/
-  xsd: http://www.w3.org/2001/XMLSchema#
+  linkml: https://w3id.org/linkml/
+  owl: http://www.w3.org/2002/07/owl#
+  schema: http://schema.org/
   vcard: https://www.w3.org/2006/vcard/ns#
+  xsd: http://www.w3.org/2001/XMLSchema#
 imports:
   - linkml:types
 default_range: string
@@ -71,6 +72,8 @@ slots:
     required: true
     description: issuing party of the statement
     range: Party
+  name:
+    description: name of the object
   owner:
     description: responsible party for the development and maintenance
     range: Party
@@ -84,6 +87,8 @@ slots:
     description: information about the required next conformity assessement activities
     range: Surveillance
     multivalued: true
+  version:
+    description: version number of the object
 ##
 ## CLASSES
 ##
@@ -98,9 +103,6 @@ classes:
         range: AccreditationBody
       object:
         range: ConformityAssessmentBody
-        required: true
-      conformity_assessment_scheme:
-        multivalued: true
         required: true
 
   AccreditationBody:
@@ -132,23 +134,17 @@ classes:
     aliases:
       - "[conformity assessment program (ISO/IEC 17000:2020)](https://www.iso.org/obp/ui/#iso:std:iso-iec:17000:ed-2:v2:en:term:4.9)"
     slots:
+      - name
       - owner
       - object
-    slot_usage:
-      owner:
-        range: SchemeOwner
-        multivalued: true
-      object:
-        multivalued: true
+      - version
     attributes:
       procedure:
         description: specified way to carry out an activity or a process (ISO/IEC 17000:2020)
         range: Procedure
-        multivalued: true
       specified_requirement:
         description: need or expectation that is stated (ISO/IEC 17000:2020)
         range: SpecifiedRequirement
-        multivalued: true
 
   Declaration:
     is_a: Attestation
@@ -186,12 +182,10 @@ classes:
     - valid_until_datetime
     slot_usage:
       object:
-        multivalued: true
         required: true
     attributes:
       previous_statement:
         range: Statement
-        multivalued: true
 
   Surveillance:
     description: systematic iteration of conformity assessment activities as a basis for maintaining the validity of the statement of conformity (ISO/IEC 17000:2020)

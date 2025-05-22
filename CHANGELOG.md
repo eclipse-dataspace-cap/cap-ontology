@@ -1,3 +1,13 @@
+## [2.2.0](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.3...v2.2.0) (2025-05-22)
+
+### Features
+
+* add name and version on conformity_assessment_scheme. Remove unneeded multiple: true ([b0bc39b](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/b0bc39b0c84c613ab046a9f6d173e8964a8b9ed8))
+
+### Bug Fixes
+
+* **ci:** fix until https://github.com/cycjimmy/semantic-release-action/pull/245 is resolved ([d7308c5](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/d7308c53d2c9676e1d0827daca333b117712ae6f))
+
 ## [2.1.3](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.2...v2.1.3) (2025-05-05)
 
 ### Bug Fixes

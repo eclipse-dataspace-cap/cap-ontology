@@ -20,6 +20,7 @@ jobs:
         id: get-next-version
         uses: cycjimmy/semantic-release-action@v4
         with:
+          semantic_version: v24.2.3 # because of https://github.com/semantic-release/semantic-release/issues/3725#issuecomment-2896196201
           dry_run: true
           extra_plugins: |
             @semantic-release/changelog@6.0.0

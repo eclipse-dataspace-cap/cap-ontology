@@ -1,3 +1,9 @@
+## [2.2.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.2.0...v2.2.1) (2025-05-23)
+
+### Bug Fixes
+
+* remove option --no-type-objects from build ([6e4fbc0](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/6e4fbc01079ec3f8f3c19b465a9af76c1a36ae1d))
+
 ## [2.2.0](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.1.3...v2.2.0) (2025-05-22)
 
 ### Features

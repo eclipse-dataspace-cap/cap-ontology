@@ -126,7 +126,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/eclips
 ## Styleguides
 ### Commit Messages
 
-Please use <conventionalcommits.org> syntax for your commit messages.
+Please use <https://conventionalcommits.org> syntax for your commit messages.
 
 <!-- omit in toc -->
 ## Attribution

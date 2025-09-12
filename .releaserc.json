@@ -1,16 +1,17 @@
 {
   "branches": [
-    "main"
+    "main",
+    {
+      "name": "beta",
+      "prerelease": true
+    }
   ],
   "debug": true,
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "conventionalcommits",
-        "releaseRules": [
-          { "breaking": true, "release": "minor" }
-        ]
+        "preset": "conventionalcommits"
       }
     ],
     [

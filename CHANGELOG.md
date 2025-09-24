@@ -1,3 +1,12 @@
+## [2.2.1-beta.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.2.0...v2.2.1-beta.1) (2025-09-24)
+
+### Bug Fixes
+
+* add beta as valid branch to trigger the workflow ([adbe1e7](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/adbe1e79bc561437379d2fb552bd8cbf9e6206e9))
+* change semantic release rule to avoid major releases without Eclipse EMO engagement ([339d08a](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/339d08aa685c317813578be3ee6ec3277f6f4e36))
+* change semantic release rule to tag all releases with beta and avoid having major releases without Eclipse EMO engagement ([ada364c](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/ada364cbaf13026ededcdc3280f4f8f0cad6c893))
+* remove option --no-type-objects from build ([6e4fbc0](https://github.com/eclipse-dataspace-cap/cap-ontology/commit/6e4fbc01079ec3f8f3c19b465a9af76c1a36ae1d))
+
 ## [2.2.1](https://github.com/eclipse-dataspace-cap/cap-ontology/compare/v2.2.0...v2.2.1) (2025-05-23)
 
 ### Bug Fixes

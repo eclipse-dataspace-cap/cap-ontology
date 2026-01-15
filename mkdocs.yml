@@ -21,15 +21,17 @@ extra:
   version: !ENV [VERSION, "0.0.0"]
 
 nav:
-  - Introduction: README.md
-  - Scope: scope.md
-  - Normative References: normative_references.md
-  - Terms and Definitions: terms_definitions.md
-  - Abbrevatied Terms: abbreviations.md
-  - Conformity Assessment Semantic Model: conformity_model.md #  defines a semantic model for conformity assessment terms (declaration, certification, attestation, accreditation, claim, evidence, requirement, ...)
-  - Conformity Assessment Credential: conformity_credential.md #  defines an entity-relationship model and VC schemas of the above terms and the consequences for the policies (Example; if the holder of a credential is the issuer, it's de facto a declaration, independently of credential format and protocol exchange)
-  - Conformity Policy: conformity_policy.md # specifies an ODRL profile supporting the use of Verifiable Credentials (VC)
-  - Conformity Negotiation: conformity_negotiation.md # defines a semantic and requirements model for VC issuers depending on the type of verifiable credentials used in the policy negotiation (Example; a certification can only be issued by a certification authority or an appointed representative of the certification authority, independently of the certification type, or how to make legally relevant evidence in line with the civil law of obligations.)
+  - Introduction:
+    - README.md
+    - Scope: scope.md
+    - Normative References: normative_references.md
+    - Terms and Definitions: terms_definitions.md
+    - Abbrevatied Terms: abbreviations.md
+  - Conformity Assessment:
+    - Conformity Assessment Semantic Model: conformity_model.md #  defines a semantic model for conformity assessment terms (declaration, certification, attestation, accreditation, claim, evidence, requirement, ...)
+    - Conformity Assessment Credential: conformity_credential.md #  defines an entity-relationship model and VC schemas of the above terms and the consequences for the policies (Example; if the holder of a credential is the issuer, it's de facto a declaration, independently of credential format and protocol exchange)
+    - Conformity Policy: conformity_policy.md # specifies an ODRL profile supporting the use of Verifiable Credentials (VC)
+    - Conformity Negotiation: conformity_negotiation.md # defines a semantic and requirements model for VC issuers depending on the type of verifiable credentials used in the policy negotiation (Example; a certification can only be issued by a certification authority or an appointed representative of the certification authority, independently of the certification type, or how to make legally relevant evidence in line with the civil law of obligations.)
   - Ontology:
     - ontology/index.md
     - Classes:
@@ -40,6 +42,7 @@ nav:
       - ... | flat | ontology/slots/*.md
     - Types:
       - ... | flat | ontology/types/*.md
+  - Annexes: annexes.md
 
 plugins:
   - search

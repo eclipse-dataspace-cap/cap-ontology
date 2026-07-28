@@ -1,3 +1,7 @@
+# MIGRATED TO https://gitlab.eclipse.org/eclipse/dataspace-cap/cap-ontology
+
+---
+
 # Conformity Assessment Policy and Credential Profile ontology
 
 This repository contains the ontology - schema and shapes - files related to the conformity assessment.

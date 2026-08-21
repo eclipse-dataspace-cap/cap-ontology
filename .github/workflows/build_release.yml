@@ -36,46 +36,48 @@ jobs:
       - get-next-version
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip' # caching pip dependencies
-      - run: pip install --upgrade pip
-      - name: Install dependencies
-        run: pip install -Ur requirements.txt
-      - run: ./gendoc.py --version "${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}"
-      - run: VERSION="${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}" mkdocs build --site-dir public
-      - name: Check for WARNING
-        run: |
-          gen-owl build/cap.yaml > /dev/null 2> stdout.log          
-          if grep 'WARNING' stdout.log; then
-            echo "WARNING messages found — stopping the job intentionally."
-            exit 1  # Fail the job
-          fi
-      - name: Build LinkML
-        run: gen-linkml build/cap.yaml --no-mergeimports --format=yaml  > public/cap.linkml.yaml
-      - name: Build shapes (SHACL)
-        run: gen-shacl build/cap.yaml --no-mergeimports --non-closed --suffix Shape > public/cap.shacl.ttl
-      - name: Build ontology (Turtle)
-        run: |
-          gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
-          --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" > public/cap.owl.ttl
-      - name: Build ontology (XML)
-        run: |
-          gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
-          --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" --format=xml > public/cap.owl.xml
-      - name: Generate JSON-LD context
-        run: gen-jsonld-context build/cap.yaml --no-mergeimports > public/cap.jsonld
+      # Site moved to https://eclipse.dev/dataspace-cap — build disabled, publishing a static redirect instead.
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11'
+      #     cache: 'pip' # caching pip dependencies
+      # - run: pip install --upgrade pip
+      # - name: Install dependencies
+      #   run: pip install -Ur requirements.txt
+      # - run: ./gendoc.py --version "${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}"
+      # - run: VERSION="${{ needs.get-next-version.outputs.new-release-version || '0.0.0' }}" mkdocs build --site-dir public
+      # - name: Check for WARNING
+      #   run: |
+      #     gen-owl build/cap.yaml > /dev/null 2> stdout.log
+      #     if grep 'WARNING' stdout.log; then
+      #       echo "WARNING messages found — stopping the job intentionally."
+      #       exit 1  # Fail the job
+      #     fi
+      # - name: Build LinkML
+      #   run: gen-linkml build/cap.yaml --no-mergeimports --format=yaml  > public/cap.linkml.yaml
+      # - name: Build shapes (SHACL)
+      #   run: gen-shacl build/cap.yaml --no-mergeimports --non-closed --suffix Shape > public/cap.shacl.ttl
+      # - name: Build ontology (Turtle)
+      #   run: |
+      #     gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+      #     --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" > public/cap.owl.ttl
+      # - name: Build ontology (XML)
+      #   run: |
+      #     gen-owl build/cap.yaml --metadata-profile=rdfs --no-mergeimports --no-use-native-uris \
+      #     --assert-equivalent-classes --enum-iri-separator "_" --ontology-uri-suffix "" --format=xml > public/cap.owl.xml
+      # - name: Generate JSON-LD context
+      #   run: gen-jsonld-context build/cap.yaml --no-mergeimports > public/cap.jsonld
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public/
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Schemas
-          path: |
-            public/cap.*
-          retention-days: 90
+          path: redirect/
+          # path: public/
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Schemas
+      #     path: |
+      #       public/cap.*
+      #     retention-days: 90
 
   deploy-page:
     if: needs.get-next-version.outputs.new-release-published == 'true'
@@ -103,11 +105,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Schemas
-          path: artifacts
+      # Schemas artifact no longer produced now that the ontology build is disabled (site moved to https://eclipse.dev/dataspace-cap).
+      # - name: Download Build Artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: Schemas
+      #     path: artifacts
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         with:
